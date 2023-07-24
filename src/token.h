@@ -1,21 +1,23 @@
+#pragma once
 #include <string>
 #include "position.h"
 
 namespace kftm {
-	enum TokenType {
-		IDENTIFIER
-	};
+    enum TokenType {
+        IDENTIFIER,
+        NUMBER
+    };
 
-	class Token {
-		TokenType type;
-		std::string value;
-		Position pos;
+    class Token {
+        Position pos;
+        TokenType type;
+        std::string value;
 
-	public:
-		Token(TokenType type, std::string value, Position pos);
+    public:
+        Token(Position pos, TokenType type, std::string value);
 
+		Position getPos();
 		TokenType getType();
 		std::string getValue();
-		Position getPos();
 	};
 }

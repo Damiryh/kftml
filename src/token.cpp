@@ -2,19 +2,20 @@
 
 using namespace kftm;
 
-Token::Token(TokenType type, std::string value, Position pos) {
+Token::Token(Position pos, TokenType type, std::string value) {
+    this->pos = pos;
 	this->type = type;
 	this->value = value;
 }
 
 TokenType Token::getType() {
-	return this->type;
+    return this->type;
 }
 
 std::string Token::getValue() {
-	return this->value;
+    return this->value;
 }
 
 Position Token::getPos() {
-	return this->pos;
+    return this->pos;
 }
