@@ -6,41 +6,41 @@
 using namespace kftm;
 
 Lexer::Lexer(const std::string &source, std::vector<Token> &tokens):
-	source(source), tokens(tokens) {}
+    source(source), tokens(tokens) {}
 
 void Lexer::tokenize() {
-	currentPos = Position();
-	ch = source.begin();
+    currentPos = Position();
+    ch = source.begin();
 
-	while (ch != source.end()) {
-		if (isalpha(*ch)) tokenizeWord();
+    while (ch != source.end()) {
+        if (isalpha(*ch)) tokenizeWord();
         else if (isdigit(*ch)) tokenizeNumber();
-		else if (isspace(*ch)){
+        else if (isspace(*ch)){
             if (*ch == '\n') currentPos.newLine(); else currentPos.next(); ch++;
-        } else continue; //throw std::runtime_error("Unknown symbol");
-	}
+        } else throw std::runtime_error("Unknown symbol");
+    }
 }
 
 void Lexer::tokenizeWord() {
-	std::string buffer = "";
-	Position start = currentPos;
+    std::string buffer = "";
+    Position start = currentPos;
 
-	while ((isalpha(*ch) || isdigit(*ch)) && (ch != source.end())) {
-		buffer.push_back(*ch++);
+    while ((isalpha(*ch) || isdigit(*ch)) && (ch != source.end())) {
+        buffer.push_back(*ch++);
         currentPos.next();
-	}
+    }
 
     tokens.push_back(Token(start, TokenType::IDENTIFIER, buffer));
 }
 
 void Lexer::tokenizeNumber() {
     std::string buffer = "";
-	Position start = currentPos;
+    Position start = currentPos;
 
-	while (isdigit(*ch) && (ch != source.end())) {
-		buffer.push_back(*ch++);
+    while (isdigit(*ch) && (ch != source.end())) {
+        buffer.push_back(*ch++);
         currentPos.next();
-	}
+    }
 
     if (*ch == '.') {
         buffer.push_back(*ch++); currentPos.next();
