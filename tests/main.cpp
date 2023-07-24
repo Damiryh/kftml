@@ -76,6 +76,15 @@ void test_token()
     line();
 }
 
+void assert_token(kftm::Token tkn, kftm::TokenType type, std::string val, unsigned int pos) {
+    message("@ Token");
+    message(tkn.getValue());
+    assert(tkn.getType() == type);
+    assert(tkn.getValue() == val);
+    assert(tkn.getPos().pos == pos);
+    OK();
+}
+
 void test_lexer()
 {
     title("Test class Lexer:");
@@ -85,24 +94,58 @@ void test_lexer()
     kftm::Lexer lexer_1(source, tokens);
     lexer_1.tokenize();
 
-    message("void tokenize()...");
+    title("void tokenize():");
     assert(tokens.size() == 4);
 
-    assert(tokens[0].getType() == kftm::TokenType::IDENTIFIER);
-    assert(tokens[0].getValue() == "id1");
-    assert(tokens[0].getPos().pos == 0);
+    assert_token(tokens[0], kftm::TokenType::IDENTIFIER,  "id1",  0u);
+    assert_token(tokens[1], kftm::TokenType::IDENTIFIER,  "id2",  4u);
+    assert_token(tokens[2],     kftm::TokenType::NUMBER,   "12",  8u);
+    assert_token(tokens[3],     kftm::TokenType::NUMBER, "32.5", 11u);
 
-    assert(tokens[1].getType() == kftm::TokenType::IDENTIFIER);
-    assert(tokens[1].getValue() == "id2");
-    assert(tokens[1].getPos().pos == 4);
+    tokens.clear();
+    source = "(x *2.3+ 8)";
+    kftm::Lexer lexer_2(source, tokens);
+    lexer_2.tokenize();
 
-    assert(tokens[2].getType() == kftm::TokenType::NUMBER);
-    assert(tokens[2].getValue() == "12");
-    assert(tokens[2].getPos().pos == 8);
+    assert_token(tokens[0],     kftm::TokenType::SYMBOL,   "(", 0);
+    assert_token(tokens[1], kftm::TokenType::IDENTIFIER,   "x", 1);
+    assert_token(tokens[2],     kftm::TokenType::SYMBOL,   "*", 3);
+    assert_token(tokens[3],     kftm::TokenType::NUMBER, "2.3", 4);
+    assert_token(tokens[4],     kftm::TokenType::SYMBOL,   "+", 7);
+    assert_token(tokens[5],     kftm::TokenType::NUMBER,   "8", 9);
+    assert_token(tokens[6],     kftm::TokenType::SYMBOL,  ")", 10);
 
-    assert(tokens[3].getType() == kftm::TokenType::NUMBER);
-    assert(tokens[3].getValue() == "32.5");
-    assert(tokens[3].getPos().pos == 11);
+    line();
+}
+
+void manual_test_lexer()
+{
+    title("Manual lexer test:");
+    std::string source;
+    std::vector<kftm::Token> tokens;
+    kftm::Lexer lexer_1(source, tokens);
+
+    std::cout << "test> ";
+    std::getline(std::cin, source);
+    if (source == "") {
+        message("Skipped.");
+        OK();
+        line();
+        return;
+    }
+
+    lexer_1.tokenize();
+
+    for (auto token: tokens) {
+        std::cout
+            << "["
+            << token.getPos().pos << ":"
+            << token.getPos().line << ","
+            << token.getPos().column << "]\t\t"
+            << token.getType() << "\t"
+            << token.getValue() << std::endl;
+    }
+
     OK();
 
     line();
@@ -116,6 +159,8 @@ int main(int argc, char **argv)
     test_position();
     test_token();
     test_lexer();
+
+    manual_test_lexer();
 
     title("Done!");
     return 0;
