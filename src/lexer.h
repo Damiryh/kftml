@@ -11,6 +11,7 @@ namespace kftm {
 
         void tokenizeWord();
         void tokenizeNumber();
+        void tokenizeSymbols();
 
     public:
         Lexer(const std::string &source, std::vector<Token> &tokens);

@@ -15,6 +15,7 @@ void Lexer::tokenize() {
     while (ch != source.end()) {
         if (isalpha(*ch)) tokenizeWord();
         else if (isdigit(*ch)) tokenizeNumber();
+        else if (SYMBOLS.count(*ch)) tokenizeSymbols();
         else if (isspace(*ch)){
             if (*ch == '\n') currentPos.newLine(); else currentPos.next(); ch++;
         } else throw std::runtime_error("Unknown symbol");
@@ -52,6 +53,11 @@ void Lexer::tokenizeNumber() {
         }
     }
 
-    if (!isspace(*ch) && (ch != source.end())) throw std::runtime_error("Wrong number!");
+    if (isalpha(*ch)) throw std::runtime_error("Wrong number!");
     tokens.push_back(Token(start, TokenType::NUMBER, buffer));
+}
+
+void Lexer::tokenizeSymbols() {
+    tokens.push_back(Token(currentPos, TokenType::SYMBOL, std::string(1, *ch)));
+    ch++; currentPos.next();
 }

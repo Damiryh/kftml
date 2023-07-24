@@ -1,11 +1,18 @@
 #pragma once
 #include <string>
+#include <set>
 #include "position.h"
 
 namespace kftm {
     enum TokenType {
         IDENTIFIER,
-        NUMBER
+        NUMBER,
+        SYMBOL,
+    };
+
+    const std::set<char> SYMBOLS {
+        '(', ')', '{', '}',
+        '+', '-', '*', '/'
     };
 
     class Token {
